@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: simple-hello-app
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    simple-hello-app: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: simple-hello-app
+spec:
+  selector:
+    matchLabels:
+      simple-hello-app: ""
+  template:
+    metadata:
+      labels:
+        simple-hello-app: ""
+    spec:
+      containers:
+      - name: simple-hello-app
+        image: quay.io/eduk8s-labs/sample-app-go
+        env:
+          - name: HELLO_MSG
+            value: stranger
