@@ -2,7 +2,7 @@
 
 While you may be aware of Helm and its chart packaging format, there are some [challenges](https://banzaicloud.com/blog/helm3-the-good-the-bad-and-the-ugly/#takeaway) where it may not be the most accommodating.
 
-We're going to explore a couple of scenarios where [imgpkg](https://carvel.dev/imgpkg/) may assist in the packaging and relocation of [OCI](https://opencontainers.org/) images and [bundles](https://github.com/opencontainers/runtime-spec#application-bundle-builders).  Then we'll take a crack at deploying a bundle using `kbld` and `kubectl`.
+We're going to explore a couple of scenarios where [imgpkg](https://carvel.dev/imgpkg/) may assist in the packaging and relocation of [OCI](https://opencontainers.org/) images and [bundles](https://github.com/opencontainers/runtime-spec#application-bundle-builders).  Then we'll take a crack at deploying a bundle using `kbld` and `kapp`.
 
 ## Scenario 1: Basic workflow
 
@@ -127,15 +127,48 @@ Now that we have have pulled bundle contents to a local directory, we can deploy
 Before we apply Kubernetes configuration, let’s use kbld to ensure that Kubernetes configuration uses exact image reference from .imgpkg/images.yml. (You can of course use other tools to take advantage of data stored in .imgpkg/images.yml).
 
 ```
-kbld -f /tmp/simple-app-bundle/config.yml -f /tmp/simple-app-bundle/.imgpkg/images.yml | kubectl apply -f-
+kbld -f /tmp/simple-app-bundle/config.yml -f /tmp/simple-app-bundle/.imgpkg/images.yml | kapp deploy -a simple-hello-app -f- --yes
 ```
 
 You should see output like:
 
 ```
 resolve | final: quay.io/eduk8s-labs/sample-app-go -> quay.io/eduk8s-labs/sample-app-go@sha256:5021a23e0c4a4633bfd6c95b13898cffb88a0e67f109d87ec01b4f896f4b4296
-service/simple-hello-app created
-deployment.apps/simple-hello-app created
+Target cluster 'https://127.0.0.1:37535' (nodes: carvel-v72626-control-plane)
+
+Changes
+
+Namespace  Name              Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+default    simple-hello-app  Deployment  -       -    create  -       reconcile  -   -
+^          simple-hello-app  Service     -       -    create  -       reconcile  -   -
+
+Op:      2 create, 0 delete, 0 update, 0 noop
+Wait to: 2 reconcile, 0 delete, 0 noop
+
+1:51:08AM: ---- applying 2 changes [0/2 done] ----
+1:51:08AM: create deployment/simple-hello-app (apps/v1) namespace: default
+1:51:08AM: create service/simple-hello-app (v1) namespace: default
+1:51:08AM: ---- waiting on 2 changes [0/2 done] ----
+1:51:08AM: ok: reconcile service/simple-hello-app (v1) namespace: default
+1:51:08AM: ongoing: reconcile deployment/simple-hello-app (apps/v1) namespace: default
+1:51:08AM:  ^ Waiting for generation 2 to be observed
+1:51:08AM:  L ok: waiting on replicaset/simple-hello-app-69c4f9448 (apps/v1) namespace: default
+1:51:08AM: ---- waiting on 1 changes [1/2 done] ----
+1:51:08AM: ongoing: reconcile deployment/simple-hello-app (apps/v1) namespace: default
+1:51:08AM:  ^ Waiting for generation 2 to be observed
+1:51:08AM:  L ok: waiting on replicaset/simple-hello-app-69c4f9448 (apps/v1) namespace: default
+1:51:08AM:  L ongoing: waiting on pod/simple-hello-app-69c4f9448-6cv8s (v1) namespace: default
+1:51:08AM:     ^ Pending: ContainerCreating
+1:51:09AM: ongoing: reconcile deployment/simple-hello-app (apps/v1) namespace: default
+1:51:09AM:  ^ Waiting for 1 unavailable replicas
+1:51:09AM:  L ok: waiting on replicaset/simple-hello-app-69c4f9448 (apps/v1) namespace: default
+1:51:09AM:  L ongoing: waiting on pod/simple-hello-app-69c4f9448-6cv8s (v1) namespace: default
+1:51:09AM:     ^ Pending: ContainerCreating
+1:51:10AM: ok: reconcile deployment/simple-hello-app (apps/v1) namespace: default
+1:51:10AM: ---- applying complete [2/2 done] ----
+1:51:10AM: ---- waiting complete [2/2 done] ----
+
+Succeeded
 ```
 
 Above `kbld` found `quay.io/eduk8s-labs/sample-app-go` in Kubernetes configuration and replaced it with `quay.io/eduk8s-labs/sample-app-go@sha256:5021a23e0c4a4633bfd6c95b13898cffb88a0e67f109d87ec01b4f896f4b4296` before forwarding configuration to `kubectl`.
@@ -252,3 +285,4 @@ Flags used in the command:
 
 Regardless which location the bundle is downloaded from, source registry or destination registry, use of the pulled bundle contents remains the same.
 You could continue with `Step 4: Use pulled bundle contents` in `Scenario 1: Basic workflow`.
+
