@@ -1,7 +1,5 @@
 # Packaging bundles for distribution
 
-While you may be aware of Helm and its chart packaging format, there are some [challenges](https://banzaicloud.com/blog/helm3-the-good-the-bad-and-the-ugly/#takeaway) where it may not be the most accommodating.
-
 We're going to explore a couple of scenarios where [imgpkg](https://carvel.dev/imgpkg/) may assist in the packaging and relocation of [OCI](https://opencontainers.org/) images and [bundles](https://github.com/opencontainers/runtime-spec#application-bundle-builders).  Then we'll take a crack at deploying a bundle using `kbld` and `kapp`.
 
 ## Scenario 1: Basic workflow
