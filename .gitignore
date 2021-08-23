@@ -12,3 +12,6 @@
 .webdav
 .yarn
 *.swp
+vendir.lock.yml
+vendor
+examples
