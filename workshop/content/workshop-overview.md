@@ -1,6 +1,6 @@
 # Overview
 
-[Carvel](https://carvel.dev/) contains several tools created out of the experience of having to work with complex, multi-purpose tools like [Helm](https://helm.sh/). Working with simple, single-purpose tools, that easily interoperate with one another can result in a better workflow compared to the all-in-one approach chosen by Helm. Using this approach can be easier to understand and debug.
+[Carvel](https://carvel.dev/) contains several tools created out of the experience of using complex, multi-purpose tools like [Helm](https://helm.sh/). Working with simple single-purpose tools that easily interoperate with one another can result in a comprehensible ergonomic workflow. This approach can also be easier to understand and debug.
 
 In this workshop we will focus on the local application development workflow; however, the tools from Carvel introduced here can also work well for other workflows, for example, for production GitOps deployments or manual application deployments.
 
