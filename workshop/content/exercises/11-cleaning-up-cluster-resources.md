@@ -33,10 +33,11 @@ When prompted, confirm that you do indeed want to delete all the resources:
 
 Type `y` now.
 
-We'll repeat this command for the other app we deployed.
+We'll repeat this command for the other apps we deployed.
 
 ```
 kapp delete -a simple-hello-app --yes
+kapp delete -a pkg-demo --yes
 ```
 
 We'll also stop kwt with
