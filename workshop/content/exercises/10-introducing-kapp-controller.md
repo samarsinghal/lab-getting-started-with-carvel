@@ -36,7 +36,7 @@ We've already installed kapp-controller in the cluster as part of the `startup.s
 
 Let's inspect it
 
-```
+```execute
 kapp inspect -a kc -t --yes
 ```
 
@@ -103,7 +103,7 @@ The [package bundle format](https://carvel.dev/kapp-controller/docs/latest/packa
 
 Let’s create a directory with our configuration files:
 
-```
+```execute
 mkdir -p package-contents/config/
 cp config-step-3-build-local/config.yml package-contents/config/config.yml
 cp config-step-3-build-local/values.yml package-contents/config/values.yml
@@ -111,7 +111,7 @@ cp config-step-3-build-local/values.yml package-contents/config/values.yml
 
 Once we have the configuration figured out, let’s use [kbld](https://carvel.dev/kbld/) to record which container images are used:
 
-```
+```execute
 mkdir -p package-contents/.imgpkg
 kbld -f package-contents/config/ --imgpkg-lock-output package-contents/.imgpkg/images.yml
 ```
@@ -120,7 +120,7 @@ For more on using kbld to populate the .imgpkg directory with an ImagesLock, and
 
 Once these files have been added, our package contents bundle is ready to be pushed!
 
-```
+```execute
 imgpkg push -b core.harbor.domain/library/simple-app:1.0.0 -f package-contents/
 ```
 
@@ -132,7 +132,7 @@ When creating this CR, the api will validate that the PackageMetadata’s name i
 
 We’ll make a conformant `metadata.yml` file:
 
-```
+```execute
 cat > metadata.yml << EOF
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: PackageMetadata
@@ -150,7 +150,7 @@ EOF
 
 Now we need to create a Package CR. This CR contains versioned instructions and metadata used to install packaged software that fits the description provided in the PackageMetadata CR we just saved in `metadata.yml`.
 
-```
+```execute
 cat > 1.0.0.yml << EOF
 ---
 apiVersion: data.packaging.carvel.dev/v1alpha1
@@ -220,26 +220,26 @@ The [PackageRepository bundle format](https://carvel.dev/kapp-controller/docs/la
 
 Let's start by creating the needed directories:
 
-```
+```execute
 mkdir -p my-pkg-repo/.imgpkg my-pkg-repo/packages/simple-app.corp.com
 ```
 
 we can copy our CR YAMLs from the previous step in to the proper packages subdirectory:
 
-```
+```execute
 cp 1.0.0.yml my-pkg-repo/packages/simple-app.corp.com
 cp metadata.yml my-pkg-repo/packages/simple-app.corp.com
 ```
 
 Next, let’s use kbld to record which package bundles are used:
 
-```
+```execute
 kbld -f my-pkg-repo/packages/ --imgpkg-lock-output my-pkg-repo/.imgpkg/images.yml
 ```
 
 With the bundle metadata files present, we can push our bundle to whatever OCI registry we plan to distribute it from, which for this tutorial will just be Harbor.
 
-```
+```execute
 imgpkg push -b core.harbor.domain/library/my-pkg-repo:1.0.0 -f my-pkg-repo
 ```
 
@@ -251,7 +251,7 @@ In the next steps we’ll act as the package consumer, showing an example of add
 
 kapp-controller needs to know which packages are available to install. One way to let it know about available packages is by creating a package repository. To do this, we need a PackageRepository CR:
 
-```
+```execute
 cat > repo.yml << EOF
 ---
 apiVersion: packaging.carvel.dev/v1alpha1
@@ -269,13 +269,13 @@ This PackageRepository CR will allow kapp-controller to install any of the packa
 
 We can use kapp to apply it to the cluster:
 
-```
+```execute
 kapp deploy -a repo -f repo.yml -y
 ```
 
 Check for the success of reconciliation to see the repository become available:
 
-```
+```execute
 kubectl get packagerepository -w
 ```
 
@@ -283,19 +283,19 @@ Once the simple-package-repository has a __Reconcile succeeded__ description, we
 
 Once the deploy has finished, we are able to list the package metadatas to see, at a high level, which packages are now available within our namespace:
 
-```
+```execute
 kubectl get packagemetadatas
 ```
 
 If there are numerous available packages, each with many versions, this list can become a bit unwieldy, so we can also list the packages with a particular name using the –field-selector option on kubectl get.
 
-```
+```execute
 kubectl get packages --field-selector spec.refName=simple-app.corp.com
 ```
 
 From here, if we are interested, we can further inspect each version to discover information such as release notes, installation steps, licenses, etc. For example:
 
-```
+```execute
 kubectl get package simple-app.corp.com.1.0.0 -o yaml
 ```
 
@@ -303,7 +303,7 @@ kubectl get package simple-app.corp.com.1.0.0 -o yaml
 
 Once we have the packages available for installation (as seen via kubectl get packages), we need to let kapp-controller know which package we want to install. To do this, we will need to create a PackageInstall CR (and a secret to hold the values used by our package):
 
-```
+```execute
 cat > pkginstall.yml << EOF
 ---
 apiVersion: packaging.carvel.dev/v1alpha1
@@ -337,19 +337,19 @@ This yaml snippet also contains a Kubernetes secret, which is referenced by the 
 
 Finally, to install the above package, we will also need to create `default-ns-sa` service account (refer to [Security model](https://carvel.dev/kapp-controller/docs/latest/security-model/) for explanation of how service accounts are used) that give kapp-controller privileges to create resources in the default namespace:
 
-```
+```execute
 kapp deploy -a default-ns-rbac -f https://raw.githubusercontent.com/vmware-tanzu/carvel-kapp-controller/develop/examples/rbac/default-ns.yml -y
 ```
 
 Apply the PackageInstall using kapp:
 
-```
+```execute
 kapp deploy -a pkg-demo -f pkginstall.yml -y
 ```
 
 After the deploy has finished, kapp-controller will have installed the package in the cluster. We can verify this by checking the pods to see that we have a workload pod running. The output should show a single running pod which is part of simple-app:
 
-```
+```execute
 kubectl get pods
 ```
 

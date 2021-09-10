@@ -1,12 +1,10 @@
-# Pushing images to a registry
-
 The previous section showed how to use `kbld` to build the container image. It failed to deploy in the end as the Kubernetes cluster being used didn't have access to images held by the docker daemon where the build was being run.
 
 In order to have it work for the Kubernetes cluster used by this workshop environment, we will need to push the image to an image registry the cluster can access.
 
 The configuration we will use this time is `config-step-4-build-and-push/push.yml`. To view the file run:
 
-```
+```execute
 cat config-step-4-build-and-push/push.yml
 ```
 
@@ -30,61 +28,72 @@ destinations:
 
 The configuration specifies that `quay.io/eduk8s-labs/sample-app-go` should be pushed to an image repository with name as specified by `push_images_repo` data value.
 
-Our local docker client is already authenticated to the registry we will be pushing to, but otherwise you would need to make sure that it can push to it.
+
+Login to the registry you would like to use
+
+```execute
+docker login
+```
+
+Now our local docker client is authenticated to the registry we will be pushing to, but otherwise you would need to make sure that it can push to it.
+
+Set registry environment variable 
+
+```
+export registry=
+```
 
 Also, to prepare for the deployment, we need to create an image pull secret to use with the deployment, so that Kubernetes can pull images from the private repo we are using:
 
-```
+```execute
 kubectl create secret generic registry-credentials --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
 Run the combined command to process the template, build the image and deploy it, setting the value for `push_images_repo` in the process.
 
-```
-ytt template -f config-step-4-build-and-push/ -v hello_msg="carvel user" -v push_images=true -v push_images_repo=core.harbor.domain/library/sample-app-go | kbld -f- | kapp deploy -a simple-app -f- --diff-changes --yes
+```execute-1
+ytt template -f config-step-4-build-and-push/ -v hello_msg="carvel user" -v push_images=true -v push_images_repo=$registry/sample-app-go | kbld -f- | kapp deploy -a simple-app -f- --diff-changes --yes
 ```
 
 The key parts of the output which are of interest are:
 
 ```
 ...
-core.harbor.domain/library/sample-app-go | starting push (using Docker): kbld:quay-io-eduk8s-labs-sample-app-go-sha256-2040a07ce5d0d41559c23103ae5c56b4d64c9f36bb5859d664b1311e329a79b5 -> core.harbor.domain/library/sample-app-go:kbld-rand-1629387768823219226-23522611324779
-core.harbor.domain/library/sample-app-go | The push refers to repository [core.harbor.domain/library/sample-app-go]
-core.harbor.domain/library/sample-app-go | a2994e8738e5: Preparing
-core.harbor.domain/library/sample-app-go | a2994e8738e5: Pushed
-core.harbor.domain/library/sample-app-go | kbld-rand-1629387768823219226-23522611324779: digest: sha256:5b2eda92ba2337c67beac54bec75dfe21ec3ad001f80230c647cabd5b8895655 size: 528
-core.harbor.domain/library/sample-app-go | finished push (using Docker)
-resolve | final: quay.io/eduk8s-labs/sample-app-go -> core.harbor.domain/library/sample-app-go@sha256:5b2eda92ba2337c67beac54bec75dfe21ec3ad001f80230c647cabd5b8895655
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | starting push (using Docker): kbld:quay-io-eduk8s-labs-sample-app-go-sha256-8ce490851d3f58808a6fbe418dc3775719c1a5b694fef5529b1fc07d7d97cf57 -> {{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go:kbld-rand-1598962590309459451-219513548161
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | The push refers to repository [{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go]
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | aab6520b305d: Preparing
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | aab6520b305d: 
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | Pushed
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | kbld-rand-1598962590309459451-219513548161: digest: sha256:c9b355704f63e231a282309ffa6f314d56e1060453e123e50a462a4ff3fb0819 size: 528
+{{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go | finished push (using Docker)
+resolve | final: quay.io/eduk8s-labs/sample-app-go -> {{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go@sha256:c9b355704f63e231a282309ffa6f314d56e1060453e123e50a462a4ff3fb0819
 
-@@ update deployment/simple-app (apps/v1) namespace: default @@
+@@ update deployment/simple-app (apps/v1) namespace: {{session_namespace}} @@
   ...
  12, 12             Type: git
- 13     -         URL: kbld:quay-io-eduk8s-labs-sample-app-go-sha256-2040a07ce5d0d41559c23103ae5c56b4d64c9f36bb5859d664b1311e329a79b5
-     13 +         URL: core.harbor.domain/library/sample-app-go@sha256:5b2eda92ba2337c67beac54bec75dfe21ec3ad001f80230c647cabd5b8895655
- 14, 14     creationTimestamp: "2021-08-18T23:29:52Z"
- 15, 15     generation: 10
+ 13     -         URL: kbld:quay-io-eduk8s-labs-sample-app-go-sha256-8ce490851d3f58808a6fbe418dc3775719c1a5b694fef5529b1fc07d7d97cf57
+     13 +         URL: {{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go@sha256:c9b355704f63e231a282309ffa6f314d56e1060453e123e50a462a4ff3fb0819
+ 14, 14     creationTimestamp: "2020-09-01T12:14:52Z"
+ 15, 15     generation: 2
   ...
-129,129             value: carvel user
-130     -         image: kbld:quay-io-eduk8s-labs-sample-app-go-sha256-2040a07ce5d0d41559c23103ae5c56b4d64c9f36bb5859d664b1311e329a79b5
-    130 +         image: core.harbor.domain/library/sample-app-go@sha256:5b2eda92ba2337c67beac54bec75dfe21ec3ad001f80230c647cabd5b8895655
-131,131           name: simple-app
-    132 +       imagePullSecrets:
-    133 +       - name: registry-credentials
-132,134   status:
-133,135     availableReplicas: 1
+132,132             value: carvel user
+133     -         image: kbld:quay-io-eduk8s-labs-sample-app-go-sha256-8ce490851d3f58808a6fbe418dc3775719c1a5b694fef5529b1fc07d7d97cf57
+    133 +         image: {{session_namespace}}-registry.training.getwarped.org/carvel/sample-app-go@sha256:c9b355704f63e231a282309ffa6f314d56e1060453e123e50a462a4ff3fb0819
+134,134           name: simple-app
+    135 +       imagePullSecrets:
+    136 +       - name: registry-credentials
+135,137   status:
+136,138     conditions:
 
 Changes
 
-Namespace  Name        Kind        Conds.  Age  Op      Op st.  Wait to    Rs    Ri
-default    simple-app  Deployment  1/2 t   16h  update  -       reconcile  fail  Deployment is not progressing:
-                                                                                 ProgressDeadlineExceeded (message:
-                                                                                 ReplicaSet "simple-app-77d4cfc7b"
-                                                                                 has timed out progressing.)
+Namespace                                 Name        Kind        Conds.  Age  Op      Op st.  Wait to    Rs       Ri  
+{{session_namespace}}  simple-app  Deployment  1/2 t   1m   update  -       reconcile  ongoing  Waiting for 1 unavailable replicas  
 
 Op:      0 create, 0 delete, 1 update, 0 noop
 Wait to: 1 reconcile, 0 delete, 0 noop
 
-3:42:51PM: ---- applying 1 changes [0/1 done] ----
+12:16:33PM: ---- applying 1 changes [0/1 done] ----
 ...
 ```
 
@@ -92,7 +101,7 @@ This time the build and deployment should be successful.
 
 If we inspect again the application we see the new image being referenced:
 
-```
+```execute-1
 kapp inspect -a simple-app --raw --filter-kind Deployment --tty=false | kbld inspect -f-
 ```
 
@@ -101,20 +110,20 @@ The output should be similar to:
 ```
 Images
 
-Image     core.harbor.domain/library/sample-app-go@sha256:5b2eda92ba2337c67beac54bec75dfe21ec3ad001f80230c647cabd5b8895655
-Metadata  - Path: /home/ubuntu/sample-app-go
+Image     {{ registry_host }}/carvel/sample-app-go@sha256:c293f506529ee65e1f6c3600398d29b7677c5fa80c065f60354486dee28cb51a
+Metadata  - Path: /home/eduk8s/exercises/sample-app-go
             Type: local
-          - Dirty: false
+          - Dirty: true
             RemoteURL: https://github.com/eduk8s-labs/sample-app-go
-            SHA: 338d4d9e5299952a0bdb10d72b873ebbde0a1410
+            SHA: b677913bc9e92c45d6136b776bce011b45666619
             Type: git
-Resource  deployment/simple-app (apps/v1) namespace: default
+Resource  deployment/simple-app (apps/v1) namespace: {{session_namespace}}
 
 1 images
 
 Succeeded
 ```
 
-You will note how the image name has been rewritten to reference the image from the image registry it was pushed to, rather than the original location for the image. Also you will see that the image digest reference (e.g. core.harbor.domain/library/sample-app-go@sha256:5b2eda...) was used instead of a tagged reference (e.g. kbld:docker-io...).
+You will note how the image name has been rewritten to reference the image from the image registry it was pushed to, rather than the original location for the image. Also you will see that the image digest reference (e.g. {{ registry_host }}/carvel/sample-app-go@sha256:4c8b96...) was used instead of a tagged reference (e.g. kbld:docker-io...).
 
 Digest references are preferred to other image reference forms as they are immutable, hence provide a guarantee that the exact version of built software will be deployed.

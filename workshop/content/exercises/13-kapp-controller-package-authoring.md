@@ -63,18 +63,18 @@ To start, lets go into the config folder `config-step-7-kapp-controller/config`
 
 Let’s use kbld to record which container images are used:
 
-```bash
+```execute
 mkdir -p config-step-7-kapp-controller/config/.imgpkg
 ```
 
-```bash 
+```execute 
 kbld -f config-step-7-kapp-controller/config --imgpkg-lock-output config-step-7-kapp-controller/config/.imgpkg/images.yml
 ```
 The above steps uses the imgpkg tool that you learned about in the earlier sections. 
 
 Once these files have been added, our package contents bundle is ready to be pushed as shown below (NOTE: replace registry.corp.com/packages/ if working through example):
 
-```bash ---Need to change the registry info here. 
+```execute ---Need to change the registry info here. 
 imgpkg push -b registry.corp.com/packages/simple-app:1.0.0 -f config-step-7-kapp-controller/
 dir: .
 file: .imgpkg/images.yml
@@ -166,7 +166,7 @@ __Testing your package__
 
 Now that we have our package defined, we can test it on the cluster. We will momentarily act as a package consumer. First, we need to make our package available on the cluster, so let’s apply the Package and PackageMetadata CRs we just created directly to the cluster:
 
-```bash 
+```execute 
 kapp deploy -a package -f config-step-7-kapp-controller/1.0.0.yml -f config-step-7-kapp-controller/metadata.yml -y
 ```
 

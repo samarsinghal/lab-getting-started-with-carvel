@@ -19,13 +19,13 @@ spec:
 
 Let us use this file to create a repository on our cluster. 
 
-```bash
+```execute
 kubectl apply -f config-step-7-kapp-controller/repository.yml
 ```
 
 Once the Repository is installed,  we can observe the available packages from the repository for installation. 
 
-```bash
+```execute
 kubectl get packages
 
 NAME                             PACKAGEMETADATA NAME   VERSION      AGE
@@ -38,13 +38,13 @@ Having now discovered the available packages, kapp-controller's PackageInstall C
 
 Let us use the `config-step-7-kapp-controller/repository.yml` to deploy the software in the package on the cluster. 
 
-```bash 
+```execute 
 kubectl apply -f packageinstall.yml
 ```
 
 Observe the installed package
 
-```bash 
+```execute 
 kubectl get packageinstall pkg-demo
     
 NAME       PACKAGE NAME          PACKAGE VERSION   DESCRIPTION           AGE
@@ -53,7 +53,7 @@ pkg-demo   simple-app.corp.com   1.0.0             Reconcile succeeded   1m50s
 
 Once the reconciliation is complete,  you will be able to observe the app ( kapp's app ) that is installed 
 
-```bash 
+```execute 
 $ kubectl get app pkg-demo
 
 NAME         DESCRIPTION           SINCE-DEPLOY   AGE

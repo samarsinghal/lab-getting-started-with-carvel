@@ -10,7 +10,7 @@ While we could `git clone` a repository that contains [examples](https://github.
 
 Take a peek at the configuration with:
 
-```
+```execute
 cat config-step-5-sourcing-dependencies/vendir.yml
 ```
 
@@ -18,14 +18,14 @@ Note that this bit of configuration employs an `includePaths` filter to fetch a 
 
 Try it out
 
-```
+```execute
 vendir sync --chdir config-step-5-sourcing-dependencies
 ```
 > We are setting the current directory to process the configuration.  And the default configuration file name to process is `vendir.yml`.
 
 Now inspect the contents of the `config-step-5-sourcing-dependencies` directory.
 
-```
+```execute
 tree config-step-5-sourcing-dependencies
 ```
 
@@ -59,13 +59,13 @@ What if you wanted to retrieve the contents of a number of Docker images from a 
 
 Try this out
 
-```
+```execute
 vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/image
 ```
 
 Then
 
-```
+```execute
 tree config-step-5-sourcing-dependencies/vendor/examples/image/vendor
 ```
 
@@ -73,13 +73,13 @@ What if you wanted to retrieve a few compressed resources (e.g., .zip files) fro
 
 Try this out
 
-```
+```execute
 vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/http
 ```
 
 Then
 
-```
+```execute
 tree config-step-5-sourcing-dependencies/vendor/examples/http/vendor
 ```
 
@@ -87,13 +87,13 @@ What if you wanted to retrieve the source for a specific release version of a He
 
 Try this out
 
-```
+```execute
 vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/helm-chart
 ```
 
 Then
 
-```
+```execute
 tree config-step-5-sourcing-dependencies/vendor/examples/helm-chart
 ```
 

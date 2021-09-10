@@ -12,7 +12,7 @@ The config-step-6a-bundle-basic-workflow directory has a config.yml file, which 
 
 To view it type
 
-```
+```execute
 cat config-step-6a-bundle-basic-workflow/config.yml
 ```
 
@@ -20,7 +20,7 @@ It includes an image reference to `quay.io/eduk8s-labs/sample-app-go`. This refe
 
 Let's take a look inside the `.imgpkg` directory
 
-```
+```execute
 tree config-step-6a-bundle-basic-workflow
 ```
 
@@ -35,7 +35,7 @@ Note that `.imgpkg/images.yml` contains a list of images, each with fully resolv
 
 Let's take a look at the contents of `.imgpkg/images.yml`
 
-```
+```execute
 cat config-step-6a-bundle-basic-workflow/.imgpkg/images.yml
 ```
 
@@ -53,7 +53,7 @@ images:
 
 This allows us to record the exact image that will be used by our Kubernetes configuration. We expect that `.imgpkg/images.yml` would be created either manually, or in an automated way. Our recommendation is to use kbld to generate `.imgpkg/images.yml`:
 
-```
+```execute
 kbld -f config-step-6a-bundle-basic-workflow/config.yml --imgpkg-lock-output config-step-6a-bundle-basic-workflow/.imgpkg/images.yml
 ```
 
@@ -63,7 +63,7 @@ We've already authenticated with a registry where we will push our bundle.
 
 You can push the bundle with our specified contents to Harbor (or any other OCI compliant container image registry) using the following command:
 
-```
+```execute
 imgpkg push -b core.harbor.domain/library/simple-app-bundle:v1.0.0 -f config-step-6a-bundle-basic-workflow
 ```
 
@@ -87,7 +87,7 @@ A user would authenticate with the registry then pull our bundle.
 
 We're already authenticated so to download the bundle run the following command:
 
-```
+```execute
 imgpkg pull -b core.harbor.domain/library/simple-app-bundle:v1.0.0 -o /tmp/simple-app-bundle
 ```
 
@@ -110,7 +110,7 @@ Flags used in the command:
 
 View the bundle contents that were extracted into the `/tmp/simple-app-bundle` directory with:
 
-```
+```execute
 tree /tmp/simple-app-bundle -a
 ```
 
@@ -124,7 +124,7 @@ Now that we have have pulled bundle contents to a local directory, we can deploy
 
 Before we apply Kubernetes configuration, let’s use kbld to ensure that Kubernetes configuration uses exact image reference from .imgpkg/images.yml. (You can of course use other tools to take advantage of data stored in .imgpkg/images.yml).
 
-```
+```execute
 kbld -f /tmp/simple-app-bundle/config.yml -f /tmp/simple-app-bundle/.imgpkg/images.yml | kapp deploy -a simple-hello-app -f- --yes
 ```
 
@@ -206,7 +206,7 @@ You'd authenticate with both source and destination registries.
 
 Run following command to copy an image from one registry to another:
 
-```
+```execute
 imgpkg copy -i quay.io/opstree/redis-operator:0.8.0 --to-repo core.harbor.domain/library/redis-operator
 ```
 
@@ -240,7 +240,7 @@ Authenticate with the source registry (we've already done so).
 
 Save the bundle to a tarball.
 
-```
+```execute
 imgpkg copy -b core.harbor.domain/library/simple-app-bundle:v1.0.0 --to-tar /tmp/my-image.tar
 ```
 
@@ -269,7 +269,7 @@ Authenticate with the destination registry.
 
 Import the bundle from your tarball to the destination registry:
 
-```
+```execute
 imgpkg copy --tar /tmp/my-image.tar --to-repo core.harbor.domain/library/simple-app-bundle
 ```
 > There's no real value in executing the above since the bundle already exists in the destination repository.  But if you had credentials and access to another private container image registry you could replace the `--to-repo` 
