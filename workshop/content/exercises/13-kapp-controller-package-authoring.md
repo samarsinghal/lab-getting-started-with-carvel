@@ -113,7 +113,7 @@ kbld -f config-step-7-kapp-controller/config --imgpkg-lock-output config-step-7-
 ```
 The above steps uses the imgpkg tool that you learned about in the earlier sections. 
 
-Once these files have been added, our package contents bundle is ready to be pushed as shown below (NOTE: replace registry.corp.com/packages/ if working through example):
+Once these files have been added, our package contents bundle is ready to be pushed as shown below 
 
 ```execute
 imgpkg push -b $registry/simple-app:1.0.0 -f config-step-7-kapp-controller/config/
@@ -124,7 +124,7 @@ dir: .
 file: .imgpkg/images.yml
 file: config/config.yml
 file: config/values.yml
-Pushed 'registry.corp.com/packages/simple-app@sha256:e6255cc...'
+Pushed 'samarsinghal/simple-app@sha256:e6255cc...'
 Succeeded
 ```
 
@@ -202,7 +202,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: registry.corp.com/packages/simple-app:1.0.0
+          image: samarsinghal/simple-app:1.0.0
       template:
       - ytt:
           paths:
