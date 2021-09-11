@@ -30,16 +30,11 @@ Finally, for the fans of GitOps, kapp-controller turns [kapp](https://carvel.dev
 
 Consult this [guide](https://carvel.dev/kapp-controller/docs/latest/install/) for how to install `kapp-controller` in your own cluster.
 
-We've already installed kapp-controller in the cluster.
-
-Let's inspect it
+We've already installed kapp-controller in the cluster. Let us now work on authoring a package that we will use the controller to manager. 
 
 ```execute
-kapp inspect -a kc -t --yes
+tree config-step-7-kapp-controller
 ```
-
-
-Let us now work on authoring a package that we will use the controller to manager. 
 
 __Creating a package__
 - Configuration
@@ -95,6 +90,13 @@ hello_msg: stranger
 
 You will find these files in the `config-step-7-kapp-controller/config/` folder
 
+
+
+```execute
+cat config-step-7-kapp-controller/config/config.yml
+cat config-step-7-kapp-controller/config/values.yml
+```
+
 __Package Contents Bundle__
 The first step in creating our package is to create an imgpkg bundle that contains the package contents: the above configuration (config.yml and values.yml) and a reference to the greeter app image (docker.io/dkalinin/k8s-simple-app@sha256:...).
 
@@ -113,7 +115,7 @@ The above steps uses the imgpkg tool that you learned about in the earlier secti
 
 Once these files have been added, our package contents bundle is ready to be pushed as shown below (NOTE: replace registry.corp.com/packages/ if working through example):
 
-```execute ---Need to change the registry info here. 
+```execute
 imgpkg push -b $registry/simple-app:1.0.0 -f config-step-7-kapp-controller/config/
 ```
 
@@ -133,6 +135,11 @@ Now that the image is packaged we need to create the Custom Resources that refer
 You will find the yaml files for these CRs in the `config-step-7-kapp-controller` folder. 
 
 A package definition comprises of 2 Custom resources. 
+
+```execute
+cat config-step-7-kapp-controller/metadata.yml
+```
+
 - The `Package Metadata` which will contain high level information and descriptions about our package ( key description and info about the package)
 ```yml
 apiVersion: data.packaging.carvel.dev/v1alpha1
@@ -149,6 +156,10 @@ spec:
 ```
 
 - The `Package`containing versioned instructions and metadata used to install packaged software that fits the description provided in the PackageMetadata CR). You will see that the package definition has instructions for `ytt` , `kbld` and the `kapp` command that you worked on in the earlier sections. 
+
+```execute
+cat config-step-7-kapp-controller/1.0.0.yml
+```
 
 ```yml
 ---
