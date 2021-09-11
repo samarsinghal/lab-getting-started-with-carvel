@@ -5,4 +5,4 @@ metadata:
 spec:
   fetch:
     imgpkgBundle:
-      image: k8slt/corp-com-pkg-repo:1.0.0
+      image: samarsinghal/simple-app:1.0.0

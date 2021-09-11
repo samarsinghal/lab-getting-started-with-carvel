@@ -3,7 +3,7 @@ kind: PackageInstall
 metadata:
   name: pkg-demo
 spec:
-  serviceAccountName: default-ns-sa
+  # serviceAccountName: default-ns-sa
   packageRef:
     refName: simple-app.corp.com
     versionSelection:
