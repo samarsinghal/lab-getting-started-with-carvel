@@ -29,6 +29,11 @@ When prompted, confirm that you do indeed want to delete all the resources:
 text: y
 ```
 
+```execute
+kapp delete -a simple-hello-app --yes
+kapp delete -a pkg-demo --yes
+```
+
 To verify that the namespace is empty run:
 
 ```execute

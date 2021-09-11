@@ -1,4 +1,45 @@
-Now that we are done with the install of the kapp-controller on the cluster. Let us work on authoring a package that we will use the controller to manager. 
+## About
+
+[kapp-controller](https://carvel.dev/kapp-controller/) provides a Kubernetes native [continuous delivery](https://carvel.dev/kapp-controller/docs/latest/app-spec/) and [package management])(https://carvel.dev/kapp-controller/docs/latest/packaging/) experience through custom resource definitions. These new resources for continuous delivery and package management help users author software packages and consume packages to ease the process of sharing, deploying, and managing software on Kubernetes.
+
+Given that software configurations for Kubernetes software can be specified in various forms:
+
+* plain [YAML](https://yaml.org/spec/1.2/spec.html) configurations
+* [Helm charts](https://helm.sh/docs/topics/charts/)
+* [ytt](http://carvel.dev/ytt/) templates
+* [jsonnet](https://jsonnet.org/learning/tutorial.html) templates
+
+and found in various locations:
+
+* Git repository
+* Archive over HTTP
+* Helm repository
+
+and written/provided by:
+
+* in-house development teams
+* vendors offering COTS products
+
+kapp-controller allows users to encapsulate, customize, install, and update such software in a _consistent_ and _manageable_ manner.
+
+Another motivation for kapp-controller was to make a small and single purpose system (as opposed to a general CD system); hence, it’s lightweight, easy-to-understand and easy-to-debug. It builds on small composable tools to achieve its goal and therefore is easy to think about.
+
+Finally, for the fans of GitOps, kapp-controller turns [kapp](https://carvel.dev/kapp/) into your continuous cluster reconciler.
+
+## Installation
+
+Consult this [guide](https://carvel.dev/kapp-controller/docs/latest/install/) for how to install `kapp-controller` in your own cluster.
+
+We've already installed kapp-controller in the cluster.
+
+Let's inspect it
+
+```execute
+kapp inspect -a kc -t --yes
+```
+
+
+Let us now work on authoring a package that we will use the controller to manager. 
 
 __Creating a package__
 - Configuration
@@ -73,7 +114,10 @@ The above steps uses the imgpkg tool that you learned about in the earlier secti
 Once these files have been added, our package contents bundle is ready to be pushed as shown below (NOTE: replace registry.corp.com/packages/ if working through example):
 
 ```execute ---Need to change the registry info here. 
-imgpkg push -b registry.corp.com/packages/simple-app:1.0.0 -f config-step-7-kapp-controller/
+imgpkg push -b $registry/simple-app:1.0.0 -f config-step-7-kapp-controller/config/
+```
+
+```
 dir: .
 file: .imgpkg/images.yml
 file: config/config.yml

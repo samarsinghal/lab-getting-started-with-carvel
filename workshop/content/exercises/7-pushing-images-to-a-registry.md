@@ -28,27 +28,6 @@ destinations:
 
 The configuration specifies that `quay.io/eduk8s-labs/sample-app-go` should be pushed to an image repository with name as specified by `push_images_repo` data value.
 
-
-Login to the registry you would like to use
-
-```execute
-docker login
-```
-
-Now our local docker client is authenticated to the registry we will be pushing to, but otherwise you would need to make sure that it can push to it.
-
-Set registry environment variable 
-
-```
-export registry=
-```
-
-Also, to prepare for the deployment, we need to create an image pull secret to use with the deployment, so that Kubernetes can pull images from the private repo we are using:
-
-```execute
-kubectl create secret generic registry-credentials --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
-```
-
 Run the combined command to process the template, build the image and deploy it, setting the value for `push_images_repo` in the process.
 
 ```execute-1
