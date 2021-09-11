@@ -19,14 +19,15 @@ Note that this bit of configuration employs an `includePaths` filter to fetch a 
 Try it out
 
 ```execute
-vendir sync --chdir config-step-5-sourcing-dependencies
+cd config-step-5-sourcing-dependencies
+vendir sync 
 ```
 > We are setting the current directory to process the configuration.  And the default configuration file name to process is `vendir.yml`.
 
 Now inspect the contents of the `config-step-5-sourcing-dependencies` directory.
 
 ```execute
-tree config-step-5-sourcing-dependencies
+tree 
 ```
 
 You should see something like:
@@ -55,32 +56,19 @@ config-step-5-sourcing-dependencies
 
 Next we'll take some time to get familiar with a few variants of `vendir` configuration the you could employ.
 
-What if you wanted to retrieve the contents of a number of Docker images from a public container image registry like Docker Hub?
-
-Try this out
-
-```execute
-vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/image
-```
-
-Then
-
-```execute
-tree config-step-5-sourcing-dependencies/vendor/examples/image/vendor
-```
-
 What if you wanted to retrieve a few compressed resources (e.g., .zip files) from a AWS S3 bucket and have them automatically unpacked in destination directories?
 
 Try this out
 
 ```execute
-vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/http
+cd vendor/examples/http
+vendir sync
 ```
 
 Then
 
 ```execute
-tree config-step-5-sourcing-dependencies/vendor/examples/http/vendor
+tree 
 ```
 
 What if you wanted to retrieve the source for a specific release version of a Helm chart from a chart repository?
@@ -88,13 +76,15 @@ What if you wanted to retrieve the source for a specific release version of a He
 Try this out
 
 ```execute
-vendir sync --chdir config-step-5-sourcing-dependencies/vendor/examples/helm-chart
+cd ../helm-chart
+vendir sync 
 ```
 
 Then
 
 ```execute
-tree config-step-5-sourcing-dependencies/vendor/examples/helm-chart
+tree 
+cd ../../../..
 ```
 
 Hopefully you've seen that `vendir` is a useful spec and tool for synchronizing content.  Its purpose really shines in situations where product teams may require and consume dependencies that are packaged and available in variety of formats.

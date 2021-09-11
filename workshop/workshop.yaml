@@ -13,9 +13,9 @@ modules:
     - exercises/7-pushing-images-to-a-registry
     - exercises/8-sourcing-dependencies
     - exercises/9-packaging-bundles-for-distribution
-    - exercises/10-introducing-kapp-controller
+    # - exercises/10-introducing-kapp-controller
     - exercises/11-cleaning-up-cluster-resources
-    - exercises/12-kapp-controller-install
+    # - exercises/12-kapp-controller-install
     - exercises/13-kapp-controller-package-authoring
     - exercises/14-kapp-controller-package-consumption
     - workshop-summary

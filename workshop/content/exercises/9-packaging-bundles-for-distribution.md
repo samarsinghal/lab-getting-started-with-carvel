@@ -21,7 +21,7 @@ It includes an image reference to `quay.io/eduk8s-labs/sample-app-go`. This refe
 Let's take a look inside the `.imgpkg` directory
 
 ```execute
-tree config-step-6a-bundle-basic-workflow
+tree config-step-6a-bundle-basic-workflow/.imgpkg
 ```
 
 It contains:

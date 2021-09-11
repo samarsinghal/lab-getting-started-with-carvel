@@ -23,12 +23,12 @@ modules:
         name: Sourcing Dependencies
     exercises/9-packaging-bundles-for-distribution:
         name: Packaging Bundles for Distribution
-    exercises/10-introducing-kapp-controller:
-        name: Introducing Kapp Controller
+    # exercises/10-introducing-kapp-controller:
+    #     name: Introducing Kapp Controller
     exercises/11-cleaning-up-cluster-resources:
         name: Clean up cluster resources
-    exercises/12-kapp-controller-install:
-        name: kapp Controller Install
+    # exercises/12-kapp-controller-install:
+    #     name: kapp Controller Install
     exercises/13-kapp-controller-package-authoring:
         name: kapp Controller Package Authoring
     exercises/14-kapp-controller-package-consumption:
