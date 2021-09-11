@@ -64,7 +64,7 @@ We've already authenticated with a registry where we will push our bundle.
 You can push the bundle with our specified contents to Harbor (or any other OCI compliant container image registry) using the following command:
 
 ```execute
-imgpkg push -b core.harbor.domain/library/simple-app-bundle:v1.0.0 -f config-step-6a-bundle-basic-workflow
+imgpkg push -b $registry/simple-app-bundle:v1.0.0 -f config-step-6a-bundle-basic-workflow
 ```
 
 You should see output like:
@@ -75,7 +75,7 @@ dir: .imgpkg
 file: .imgpkg/bundle.yml
 file: .imgpkg/images.yml
 file: config.yml
-Pushed 'core.harbor.domain/library/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae'
+Pushed '$registry/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae'
 Succeeded
 ```
 
@@ -88,13 +88,13 @@ A user would authenticate with the registry then pull our bundle.
 We're already authenticated so to download the bundle run the following command:
 
 ```execute
-imgpkg pull -b core.harbor.domain/library/simple-app-bundle:v1.0.0 -o /tmp/simple-app-bundle
+imgpkg pull -b $registry/simple-app-bundle:v1.0.0 -o /tmp/simple-app-bundle
 ```
 
 You should see output like:
 
 ```
-Pulling bundle 'core.harbor.domain/library/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae'
+Pulling bundle '$registry/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae'
   Extracting layer 'sha256:0ed990f64175aa92f7f2fb5349dad79751b4fb1d451f6ec6511c6403822edfae' (1/1)
 
 Locating image lock file images...
@@ -207,7 +207,7 @@ You'd authenticate with both source and destination registries.
 Run following command to copy an image from one registry to another:
 
 ```execute
-imgpkg copy -i quay.io/opstree/redis-operator:0.8.0 --to-repo core.harbor.domain/library/redis-operator
+imgpkg copy -i quay.io/opstree/redis-operator:0.8.0 --to-repo $registry/redis-operator
 ```
 
 You should see some output like:
@@ -241,14 +241,14 @@ Authenticate with the source registry (we've already done so).
 Save the bundle to a tarball.
 
 ```execute
-imgpkg copy -b core.harbor.domain/library/simple-app-bundle:v1.0.0 --to-tar /tmp/my-image.tar
+imgpkg copy -b $registry/simple-app-bundle:v1.0.0 --to-tar /tmp/my-image.tar
 ```
 
 You should see some output like:
 
 ```
 copy | exporting 2 images...
-copy | will export core.harbor.domain/library/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae
+copy | will export $registry/simple-app-bundle@sha256:91bc50768d10db3850be5a6af67d43e3ca92d92c340b19d7d18574e447fd74ae
 copy | will export quay.io/eduk8s-labs/sample-app-go@sha256:5021a23e0c4a4633bfd6c95b13898cffb88a0e67f109d87ec01b4f896f4b4296
 copy | exported 2 images
 copy | writing layers...
@@ -270,7 +270,7 @@ Authenticate with the destination registry.
 Import the bundle from your tarball to the destination registry:
 
 ```execute
-imgpkg copy --tar /tmp/my-image.tar --to-repo core.harbor.domain/library/simple-app-bundle
+imgpkg copy --tar /tmp/my-image.tar --to-repo $registry/simple-app-bundle
 ```
 > There's no real value in executing the above since the bundle already exists in the destination repository.  But if you had credentials and access to another private container image registry you could replace the `--to-repo` 
 

@@ -121,7 +121,7 @@ For more on using kbld to populate the .imgpkg directory with an ImagesLock, and
 Once these files have been added, our package contents bundle is ready to be pushed!
 
 ```execute
-imgpkg push -b core.harbor.domain/library/simple-app:1.0.0 -f package-contents/
+imgpkg push -b $registry/simple-app:1.0.0 -f package-contents/
 ```
 
 ### Creating the Custom Resources
@@ -192,7 +192,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: core.harbor.domain/library/simple-app:1.0.0
+          image: $registry/simple-app:1.0.0
       template:
       - ytt:
           paths:
@@ -240,7 +240,7 @@ kbld -f my-pkg-repo/packages/ --imgpkg-lock-output my-pkg-repo/.imgpkg/images.ym
 With the bundle metadata files present, we can push our bundle to whatever OCI registry we plan to distribute it from, which for this tutorial will just be Harbor.
 
 ```execute
-imgpkg push -b core.harbor.domain/library/my-pkg-repo:1.0.0 -f my-pkg-repo
+imgpkg push -b $registry/my-pkg-repo:1.0.0 -f my-pkg-repo
 ```
 
 The package repository is pushed!
@@ -261,11 +261,11 @@ metadata:
 spec:
   fetch:
     imgpkgBundle:
-      image: core.harbor.domain/library/my-pkg-repo:1.0.0
+      image: $registry/my-pkg-repo:1.0.0
 EOF
 ```
 
-This PackageRepository CR will allow kapp-controller to install any of the packages found within the `core.harbor.domain/library/my-pkg-repo:1.0.0` imgpkg bundle, which we stored in our Harbor registry previously.
+This PackageRepository CR will allow kapp-controller to install any of the packages found within the `$registry/my-pkg-repo:1.0.0` imgpkg bundle, which we stored in our Harbor registry previously.
 
 We can use kapp to apply it to the cluster:
 
