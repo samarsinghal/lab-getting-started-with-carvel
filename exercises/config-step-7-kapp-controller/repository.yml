@@ -2,7 +2,6 @@ apiVersion: packaging.carvel.dev/v1alpha1
 kind: PackageRepository
 metadata:
   name: simple-package-repository
-  namespace: default
 spec:
   fetch:
     imgpkgBundle:

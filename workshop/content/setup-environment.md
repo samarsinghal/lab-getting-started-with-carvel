@@ -1,29 +1,17 @@
-# Environment Setup
+This workshop environment provides you with a Kubernetes cluster to use when running the exercises covered by this workshop. To verify you can access the Kubernetes cluster, run `kubectl version` in the terminal by clicking on the action block below.
 
-This environment will provide you with a Kubernetes cluster and a private container image registry powered by Harbor to use when running the exercises covered by this workshop.
-
-Let's invoke a startup script to bootstrap the cluster and install Harbor.
-
-```
-./startup.sh
-```
-> Please be patient.  This will take anywhere from 3-5 minutes to complete.
-
-Let's verify that the cluster node and pods are up and running
-```
-kubectl get nodes
-kubectl get pods -A
+```execute
+kubectl version
 ```
 
-And quickly verify the versions of the CLIs we will leverage
+The workshop uses these action blocks for various purposes. Anytime you see such a block with an icon on the right hand side, you can click on it and it will perform the listed action for you.
 
-```
-kwt version
-ytt version
-kapp version
-kbld version
-imgpkg version
-vendir version
-```
+To see what versions of the Carvel tools we will be using, you can run:
 
-If everything looks fine to you, then please continue to the first exercise.
+```execute
+ytt --version
+kbld --version
+kapp --version
+imgpkg --version
+vendir --version
+```

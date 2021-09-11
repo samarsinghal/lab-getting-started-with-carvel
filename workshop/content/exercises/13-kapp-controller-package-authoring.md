@@ -16,7 +16,6 @@ simple-app: ""
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: default
   name: simple-app
 spec:
   ports:
@@ -27,7 +26,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: default
   name: simple-app
 spec:
   selector:
